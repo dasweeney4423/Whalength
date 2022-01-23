@@ -23,8 +23,8 @@
 # at dsweeney@marecotel.org or by calling me at +1 224-804-7754.
 
 #### Manual Inputs ####
-day_folder <- "C:/Users/marec/Docs/UAS/IG UAS Sept-Oct 2021/2021-10-01"  #folder directory for days images
-images_folder <- "C:/Users/marec/Docs/UAS/IG UAS Sept-Oct 2021/2021-10-01/Stills/Measured"  #folder directory where stills were stored
+day_folder <- "C:/Users/marec/Docs/IG/FieldEfforts/IG UAS Sept-Oct 2021/2021-10-05"  #folder directory for days images
+images_folder <- "C:/Users/marec/Docs/IG/FieldEfforts/IG UAS Sept-Oct 2021/2021-10-05/Stills/Measured"  #folder directory where stills were stored
 img_comment <- FALSE  #TRUE if you wish to add notes and describe the content of each image, FALSE otherwise (if you wish to add comments and use a second app for image viewing, it'll be faster but you'll have to use more screens whereas R can show you the images but they may take a little while to load each time)
 Takeoff_alt <- NA #altitude at takeoff (used to standardize barometric pressure reading), put NA if unknown
 
@@ -40,6 +40,7 @@ Takeoff_alt <- NA #altitude at takeoff (used to standardize barometric pressure 
   
   #create actual whalength sheet
   image_files <- list.files(images_folder) #file names of images (likely stills) within folder
+  if (length(image_files) == 0) {stop(paste("No images in", images_folder))}
   day_files <- list.files(day_folder) #all file names within day folder
   
   if ("LidarLog_DailyMaster.csv" %in% day_files == FALSE) { #make sure that all dumped files have been organized and master lidar file is created and in day folder
@@ -103,13 +104,22 @@ Takeoff_alt <- NA #altitude at takeoff (used to standardize barometric pressure 
                               tibble(Folder = paste0(strsplit(images_folder, "/")[[1]][(length(strsplit(images_folder,"/")[[1]])-1):length(strsplit(images_folder,"/")[[1]])], collapse="/"),
                                      Content, notes,
                                      `best image`,
-                                     VideoStartLocal = vid_start_local, 
-                                     VideoStartUTC = vid_start,
-                                     `Corrected time`,
+                                     VideoStartLocal = as.character(vid_start_local), 
+                                     VideoStartUTC = as.character(vid_start),
+                                     `Corrected time` = paste(if_else(str_count(hour(`Corrected time`)) == 2, 
+                                                                      as.character(hour(`Corrected time`)),
+                                                                      paste0(0,hour(`Corrected time`))),
+                                                              if_else(str_count(minute(`Corrected time`)) == 2, 
+                                                                      as.character(minute(`Corrected time`)),
+                                                                      paste0(0,minute(`Corrected time`))),
+                                                              if_else(str_count(second(`Corrected time`)) == 2, 
+                                                                      as.character(second(`Corrected time`)),
+                                                                      paste0(0,second(`Corrected time`))),
+                                                              sep=":"),
                                      Drone = strsplit(strsplit(`best image`, "[.]")[[1]][1],"_")[[1]][2],
                                      Tilt = lidar_data$tilt_deg[lidarrow],
                                      Lidar = lidar_data$laser_altitude_cm[lidarrow],
-                                     Bar_alt_uncorrected.m. = "get from flight logs",
+                                     Bar_alt_uncorrected.m. = "get from flight logs if Takeoff_alt.m is known",
                                      Takeoff_alt.m. = Takeoff_alt,
                                      long = lidar_data$longitude[lidarrow],
                                      lat = lidar_data$latitude[lidarrow]) %>% 

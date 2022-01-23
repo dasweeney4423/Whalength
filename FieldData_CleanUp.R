@@ -30,7 +30,7 @@
 # at dsweeney@marecotel.org or by calling me at +1 224-804-7754.
 
 #### Manual Inputs ####
-day_folder <- "C:/Users/marec/Docs/UAS/IG UAS Sept-Oct 2021/2021-10-06"  #folder directory for days images
+day_folder <- "C:/Users/marec/Docs/IG/FieldEfforts/IG UAS Sept-Oct 2021/2021-09-30"  #folder directory for days images
 
 #### stuff that just needs to run ####
 {
@@ -39,6 +39,7 @@ day_folder <- "C:/Users/marec/Docs/UAS/IG UAS Sept-Oct 2021/2021-10-06"  #folder
   require(lubridate)
   require(readr)
   require(exiftoolr)
+  install_exiftool()
   
   lidar_master <- tibble() #starts dataset
 

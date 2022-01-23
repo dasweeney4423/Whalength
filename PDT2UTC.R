@@ -1,5 +1,8 @@
 # This function is a quick converter from PDT to UTC that is 
-# to be used to obtain UTC timestamps of video still images.
+# to be used to obtain UTC timestamps (to compare with lidar data) of video still images.
+# This code is best used when pulling stills to make sure there is lidar altitude data at the time
+# of the desired still.
+#
 # vidstart = start time of video in PDT
 # mins = minutes since start of video that still was captured
 # secs = seconds since start of video that still was captured (not counting minutes already input)
@@ -14,5 +17,5 @@ PDT2UTC <- function(vidstart, mins, secs, weirdmillis) {
     round((mins*60) + secs + (weirdmillis/30))
 }
 
-PDT2UTC("2021/10/02 9:38:58", 
-        0,0,0)
+PDT2UTC("2021-10-05 17:36:05", #start on this date
+        0,27,18)
